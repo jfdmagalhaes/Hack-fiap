@@ -1,30 +1,42 @@
 using Domain.Helpers;
+using Domain.Interfaces;
+using Infrastructure.EntityFramework.Context;
+using Infrastructure.Repositories;
 using MassTransit;
+using Microsoft.EntityFrameworkCore;
 using Worker.Consumer;
 
-var builder = Host.CreateApplicationBuilder(args);
-
-var appSettings = builder.Configuration.GetSection("AppSettings").Get<AppSettings>() ?? new AppSettings();
-
-builder.Services.AddMassTransit(x =>
-{
-    x.UsingRabbitMq((context, cfg) =>
+IHost host = Host.CreateDefaultBuilder(args)
+    .ConfigureServices((hostContext, services) =>
     {
-        cfg.Host(appSettings.MassTransit.Servidor, "/", h =>
+        var configuration = hostContext.Configuration;
+        var appSettings = configuration.GetSection("AppSettings").Get<AppSettings>() ?? new AppSettings();
+
+        services.AddSingleton(appSettings);
+        services.AddDbContext<IMidiaDbContext, MidiaDbContext>(options => { options.UseSqlServer(configuration.GetConnectionString("DefaultConnection")); });
+        services.AddTransient<IMidiaRepository, MidiaRepository>();
+
+        services.AddMassTransit(x =>
         {
-            h.Username(appSettings.MassTransit.Usuario);
-            h.Password(appSettings.MassTransit.Senha);
+            x.UsingRabbitMq((context, cfg) =>
+            {
+                cfg.Host(appSettings.MassTransit.Servidor, "/", h =>
+                {
+                    h.Username(appSettings.MassTransit.Usuario);
+                    h.Password(appSettings.MassTransit.Senha);
+                });
+                cfg.ReceiveEndpoint(appSettings.MassTransit.NomeFila, e =>
+                {
+                    e.Consumer<MidiaReader>(context);
+                });
+            });
+
+            x.AddConsumer<MidiaReader>();
         });
-        cfg.ReceiveEndpoint(appSettings.MassTransit.NomeFila, e =>
-        {
-            e.Consumer<MidiaReader>(context);
-        });
-    });
 
-    x.AddConsumer<MidiaReader>();
-});
 
-builder.Services.AddHostedService<Worker.Worker>();
+        services.AddHostedService<Worker.Worker>();
+    })
+    .Build();
 
-var host = builder.Build();
 host.Run();

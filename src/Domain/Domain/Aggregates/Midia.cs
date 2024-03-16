@@ -1,8 +1,11 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Domain.Interfaces;
+using System.Text.Json.Serialization;
 
 namespace Domain.Aggregates;
-public class Midia
-{
-    //public IFormFile FormFile { get; set; }
-    public DateTime CreationData { get; set; }
+public class Midia : IAggregateRoot
+{    public DateTime CreationDate { get; set; }
+    public string FilePath { get; set; }
+
+    [JsonIgnore]
+    public int Id { get; set; }
 }
