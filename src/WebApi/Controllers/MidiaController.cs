@@ -24,22 +24,18 @@ public class MidiaController : ControllerBase
     {
         try
         {
-            //TODO Envio para o blobstorage e retorno string
-            var filePathBlob = "teste";
+            await _service.SaveMidiaAndSplit(midia);
 
             //Envio para Rabbit e armazenamento no sql
             var midiaEntity = new Midia
             {
-                FilePath = filePathBlob,
+                FilePath = midia.FormFile.FileName,
                 CreationDate = DateTime.Now
             };
 
             await _midiaProducer.SendMessageAsync(midiaEntity);
 
-            //TODO 
-            await _service.SplitMidia(filePathBlob);
-
-            return Ok(); //retornar imgs??
+            return Ok();
         }
         catch (Exception ex)
         {
