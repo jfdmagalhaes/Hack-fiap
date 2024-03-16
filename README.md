@@ -22,3 +22,12 @@ MassTransit: Biblioteca para integração do RabbitMQ com aplicativos .NET.
 ## Usage
 Executar o `` docker-compose up `` que está na raiz do diretório.
 Esse docker irá executar os scripts de iniciação do banco de dados disponível em /resources/scripts/schemas.sql
+
+## Desenho da arquitetura escolhida do projeto
+![image](https://github.com/jfdmagalhaes/hackaton-fiap/assets/145411274/4d49f499-baf1-4a0c-8c58-36d4cc276332)
+
+## Azure
+Azure Conta de Armazenamento: hackatonfiapgrupo17
+Azure Grupo de Recurso: GR_Hackaton
+Link blob storage: https://hackatonfiapgrupo17.blob.core.windows.net/apiimages
+
