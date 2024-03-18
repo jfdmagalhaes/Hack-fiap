@@ -31,3 +31,4 @@ Azure Conta de Armazenamento: hackatonfiapgrupo17
 Azure Grupo de Recurso: GR_Hackaton
 Link blob storage: https://hackatonfiapgrupo17.blob.core.windows.net/apiimages
 
+Implementado por: [Jéssica](https://github.com/jfdmagalhaes), [Claupper](https://github.com/claupper), [Mario](https://github.com/MARIODUARTE3108), [Reis](https://github.com/oreisjuniorfilho)
